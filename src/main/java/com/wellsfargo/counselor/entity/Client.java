@@ -1,16 +1,19 @@
 package com.wellsfargo.counselor.entity;
 
-
 import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "advisor") // Optional: Specify the table name in the database
-public class Advisor {
+@Table(name = "client") // Optional: Specify the table name in the database
+public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long advisorId;
+    private Long clientId;
+
+    @ManyToOne
+    @JoinColumn(name = "advisorId", nullable = false)
+    private Advisor advisor;
 
     @Column(nullable = false)
     private String firstName;
@@ -22,11 +25,12 @@ public class Advisor {
     private String phone;
     private String email;
 
-    public Advisor() {
+    public Client() {
         // Default constructor (required by JPA)
     }
 
-    public Advisor(String firstName, String lastName, String address, String phone, String email) {
+    public Client(Advisor advisor, String firstName, String lastName, String address, String phone, String email) {
+        this.advisor = advisor;
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
@@ -34,8 +38,16 @@ public class Advisor {
         this.email = email;
     }
 
-    public Long getAdvisorId() {
-        return advisorId;
+    public Long getClientId() {
+        return clientId;
+    }
+
+    public Advisor getAdvisor() {
+        return advisor;
+    }
+
+    public void setAdvisor(Advisor advisor) {
+        this.advisor = advisor;
     }
 
     public String getFirstName() {
@@ -82,12 +94,12 @@ public class Advisor {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Advisor advisor = (Advisor) o;
-        return Objects.equals(advisorId, advisor.advisorId);
+        Client client = (Client) o;
+        return Objects.equals(clientId, client.clientId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(advisorId);
+        return Objects.hash(clientId);
     }
 }
